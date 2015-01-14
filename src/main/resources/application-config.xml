@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:c="http://www.springframework.org/schema/c" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:oxm="http://www.springframework.org/schema/oxm" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm.xsd
+	    http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd
+	    http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd 
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	<context:annotation-config />
+	<tx:annotation-driven />
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+
+
+	<bean id="employeeRepository" class="com.test.repository.EmployeeRepositoryImpl" />
+
+	<bean id="employeeService" class="com.test.service.EmployeeServiceImpl">
+		<property name="employeeRepository" ref="employeeRepository" />
+	</bean>
+
+
+	<rabbit:connection-factory id="connectionFactory"
+		username="guest" password="guest" addresses="localhost:5672" />
+	<rabbit:listener-container
+		connection-factory="connectionFactory">
+		<rabbit:listener queues="myqueue" ref="employeeService"
+			method="createNewEmployee" />
+	</rabbit:listener-container>
+	<bean id="jsonMessageConverter"
+		class="org.springframework.amqp.support.converter.JsonMessageConverter">
+	</bean>
+	
+	<rabbit:template id="amqpTemplate" connection-factory="connectionFactory"
+		queue="myqueue" exchange="Exchange" />
+<!-- 		message-converter="jsonMessageConverter" /> -->
+	<rabbit:direct-exchange name="Exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="myqueue" key="myqueue" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+	<rabbit:admin connection-factory="connectionFactory" />
+	<bean id="rabbitListenerContainerFactory"
+		class="org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="concurrentConsumers" value="3" />
+		<property name="maxConcurrentConsumers" value="10" />
+	</bean>
+	<rabbit:queue id="myqueue" name="myqueue" />
+	<rabbit:queue id="status" name="status" />
+</beans>
