@@ -12,5 +12,4 @@ public interface EmployeeService {
 	public List<Employee> getAllEmployees() throws SQLException;
 	public Employee findEmployeeById(Long employeeNumber);
 	public void updateEmployee(Employee employee) throws SQLException;
-
 }

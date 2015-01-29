@@ -1,5 +1,6 @@
 package com.test.model;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -11,7 +12,7 @@ import com.sun.xml.internal.txw2.annotation.XmlElement;
 
 @XmlRootElement(name="employee",namespace="http://test.com")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Employee {
+public class Employee implements Serializable{
 	
 	private Long employeeNumber;
 	private String name;

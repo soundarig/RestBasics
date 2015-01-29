@@ -4,9 +4,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 
+import com.test.controller.EmployeeNotFoundException;
 import com.test.model.Employee;
 import com.test.repository.EmployeeRepository;
 
@@ -26,8 +28,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 		System.out.println("In EmployeeServiceImpl parameterised constructor");
 	}
 
-		
-	@RabbitListener(queues = "myqueue")
 	public void createNewEmployee(Employee employee) throws SQLException {
 		employeeRepository.save(employee);
 		

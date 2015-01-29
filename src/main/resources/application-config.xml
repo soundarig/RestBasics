@@ -12,7 +12,7 @@
 	    http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd 
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 	<context:annotation-config />
-	<tx:annotation-driven />
+	<context:component-scan base-package="com.test" />
 
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
 		<property name="dataSource" ref="dataSource" />
@@ -26,38 +26,44 @@
 
 
 	<bean id="employeeRepository" class="com.test.repository.EmployeeRepositoryImpl" />
+	<bean id="customMessageListener" class="com.test.controller.CustomMessageListener" />
+
+	<bean id="employeeMsgController" class="com.test.controller.EmployeeMsgController" />
 
 	<bean id="employeeService" class="com.test.service.EmployeeServiceImpl">
 		<property name="employeeRepository" ref="employeeRepository" />
 	</bean>
-
-
 	<rabbit:connection-factory id="connectionFactory"
 		username="guest" password="guest" addresses="localhost:5672" />
-	<rabbit:listener-container
-		connection-factory="connectionFactory">
-		<rabbit:listener queues="myqueue" ref="employeeService"
-			method="createNewEmployee" />
-	</rabbit:listener-container>
-	<bean id="jsonMessageConverter"
-		class="org.springframework.amqp.support.converter.JsonMessageConverter">
+
+	<bean id="serializerMessageConverter"
+		class="org.springframework.amqp.support.converter.SerializerMessageConverter">
 	</bean>
-	
 	<rabbit:template id="amqpTemplate" connection-factory="connectionFactory"
-		queue="myqueue" exchange="Exchange" />
-<!-- 		message-converter="jsonMessageConverter" /> -->
+		queue="myqueue" exchange="Exchange" message-converter="serializerMessageConverter" />
+
 	<rabbit:direct-exchange name="Exchange">
 		<rabbit:bindings>
-			<rabbit:binding queue="myqueue" key="myqueue" />
+			<rabbit:binding queue="myqueue" key="myqueue"  />
 		</rabbit:bindings>
 	</rabbit:direct-exchange>
+
 	<rabbit:admin connection-factory="connectionFactory" />
+	
+	<rabbit:listener-container
+		connection-factory="connectionFactory" message-converter="serializerMessageConverter"  >
+<!-- 		<rabbit:listener id="listener" ref="employeeMsgController" method="processMessage" queue-names="myqueue" /> -->
+<!-- 		<rabbit:listener id="listener2" ref="employeeService" method="processMessage" queue-names="myqueue"  /> -->
+			<rabbit:listener id="listener3" ref="customMessageListener" queue-names="myqueue"  />
+	</rabbit:listener-container>
+	
 	<bean id="rabbitListenerContainerFactory"
 		class="org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory">
 		<property name="connectionFactory" ref="connectionFactory" />
 		<property name="concurrentConsumers" value="3" />
 		<property name="maxConcurrentConsumers" value="10" />
 	</bean>
-	<rabbit:queue id="myqueue" name="myqueue" />
+
+	<rabbit:queue id="myqueue" name="myqueue"  />
 	<rabbit:queue id="status" name="status" />
 </beans>

@@ -1,11 +1,13 @@
 package com.test.controller;
 
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.messaging.core.MessagePostProcessor;
 import org.springframework.messaging.handler.annotation.SendTo;
 
 import com.test.model.Employee;
@@ -13,13 +15,20 @@ import com.test.model.Employee;
 public class MessageSender {
 	@Autowired
 	private RabbitTemplate amqpTemplate;
-	@SendTo("myqueue")
+	
 	public void send() { 
-//		Employee employee = new Employee(Long.valueOf("4"),"test","test@abc.com","city","country");
+		Employee employee = new Employee(Long.valueOf("4"),"trial","trial@abc.com","city","country");
 		ApplicationContext context = new ClassPathXmlApplicationContext("application-config.xml", "infrastructure-config.xml"); 
 		amqpTemplate = (RabbitTemplate)context.getBean("amqpTemplate");
-		amqpTemplate.setRoutingKey("myqueue");
-		amqpTemplate.convertAndSend("hi"); 
+		amqpTemplate.convertAndSend("myqueue",employee,
+				new org.springframework.amqp.core.MessagePostProcessor() {
+			
+			public Message postProcessMessage(Message message) throws AmqpException {
+				message.getMessageProperties().setHeader("type", "create");
+				return message;
+			}
+		});
+	         
 		System.out.println("Message  sent."); 
 	} 
 	
@@ -34,6 +43,6 @@ public class MessageSender {
 	public static void main(String[] args) { 
 		MessageSender sender = new MessageSender();
 		sender.send();
-		sender.receive(); 
+		//sender.receive(); 
 	} 
 }
