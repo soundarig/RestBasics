@@ -29,8 +29,8 @@ public class EmployeeRepositoryImpl implements EmployeeRepository {
 	}
 
 	public void save(Employee employee)  {
-		String query="insert into employee(name,city,country,emailaddress) values(?,?,?,?)";
-		jdbcTemplate.update(query,employee.getName(),employee.getCity(),employee.getCountry(),
+		String query="insert into employee(employeeNumber, name,city,country,emailaddress) values(?,?,?,?,?)";
+		jdbcTemplate.update(query,employee.getEmployeeNumber(), employee.getName(),employee.getCity(),employee.getCountry(),
 				employee.getEmailAddress());
 		
 		System.out.println("Account saved");	

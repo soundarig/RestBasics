@@ -1,14 +1,10 @@
 package com.test.model;
 
 import java.io.Serializable;
-import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.sun.xml.internal.txw2.annotation.XmlElement;
 
 @XmlRootElement(name="employee",namespace="http://test.com")
 @XmlAccessorType(XmlAccessType.FIELD)

@@ -1,34 +1,23 @@
 package com.test.controller;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.test.model.Employee;
-import com.test.model.Employees;
 
 public class Client {
 
 	public static void main(String[] args) throws Exception {
 		RestTemplate restTemplate= new RestTemplate();
-
-		/*Employee account= new Employee(new Long(123), "AAAA", true, 111, "aaa", "Bangalore", "India");
+		
+		Employee account= new Employee(new Long(123), "AAAA", "aaa@test.com", "Bangalore", "India");
 		
 		HttpEntity<Object> responseEntity=
-				restTemplate.postForEntity("http://localhost:4444/01restbasics/accounts/", account, null);
+				restTemplate.postForEntity("http://localhost:8080/01restbasics/employee/", account, null);
 		
 		HttpHeaders httpHeaders=responseEntity.getHeaders();
 		System.out.println(httpHeaders);
-		*/
 		//Account account=restTemplate.getForObject("http://localhost:4444/01restbasics/accounts/{accnum}", Account.class, 1);
 		//System.out.println("Name : "+account.getName());
 		/*Accounts account=restTemplate.getForObject("http://localhost:5555/01restbasics/accounts/allwithheaders", 

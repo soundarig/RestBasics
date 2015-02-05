@@ -31,9 +31,6 @@
 
 	<bean id="employeeMsgController" class="com.test.controller.EmployeeMsgController" />
 
-	<bean id="employeeService" class="com.test.service.EmployeeServiceImpl">
-		<property name="employeeRepository" ref="employeeRepository" />
-	</bean>
 	<rabbit:connection-factory id="connectionFactory"
 		username="guest" password="guest" addresses="localhost:5672" />
 
@@ -58,13 +55,6 @@
 			<rabbit:listener id="listener3" ref="customMessageListener" queue-names="myqueue"  />
 	</rabbit:listener-container>
 	
-	<bean id="rabbitListenerContainerFactory"
-		class="org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory">
-		<property name="connectionFactory" ref="connectionFactory" />
-		<property name="concurrentConsumers" value="3" />
-		<property name="maxConcurrentConsumers" value="10" />
-	</bean>
-
 	<rabbit:queue id="myqueue" name="myqueue"  />
 	<rabbit:queue id="status" name="status" />
 </beans>
