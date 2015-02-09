@@ -24,9 +24,6 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-
-
-	<bean id="employeeRepository" class="com.test.repository.EmployeeRepositoryImpl" />
 	<bean id="customMessageListener" class="com.test.controller.CustomMessageListener" />
 
 	<bean id="employeeMsgController" class="com.test.controller.EmployeeMsgController" />

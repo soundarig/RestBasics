@@ -1,15 +1,21 @@
 package com.test.model;
 
-import java.io.Serializable;
-
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.springframework.data.annotation.Persistent;
+import org.springframework.data.cassandra.mapping.PrimaryKey;
+
 @XmlRootElement(name="employee",namespace="http://test.com")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Employee implements Serializable{
-	
+@Entity
+@Persistent
+public class Employee{
+	@Id
+	@PrimaryKey
 	private Long employeeNumber;
 	private String name;
 	private String city;
@@ -35,7 +41,6 @@ public class Employee implements Serializable{
 	
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return "Name="+name+ " employeeNumber ="+employeeNumber+" city"+city+" Country= "+country;
 	}
 
