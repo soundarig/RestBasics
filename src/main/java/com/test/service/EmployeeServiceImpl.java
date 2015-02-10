@@ -54,7 +54,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	public Employee findEmployeeById(Long employeeNumber) {
-		return employeeRepository.findOne(employeeNumber);
+		return employeeRepository.findByEmployeeNumber(employeeNumber);
 	}
 
 	public CrudRepository<Employee, Long> getEmployeeRepository() {
