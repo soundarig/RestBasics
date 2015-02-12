@@ -6,6 +6,5 @@ import com.test.model.Employee;
 
 public interface EmployeeRepository extends CrudRepository<Employee, Long> {
 	
-	Employee findByEmployeeNumber(Long empId);
+
 }
-	

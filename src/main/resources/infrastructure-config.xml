@@ -4,6 +4,21 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+	<beans profile="psql">
+		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+			<property name="driverClassName" value="org.postgresql.Driver" />
+			<property name="url" value="jdbc:postgresql://localhost:5433/postgres" />
+			<property name="username" value="postgres" />
+			<property name="password" value="postgres" />
+		</bean>
+	</beans>
+
+	<beans profile="embed">
+		<jdbc:embedded-database id="dataSource">
+			<jdbc:script location="classpath:schema-hsql.sql" />
+		</jdbc:embedded-database>
+	</beans>
+
 	<beans profile="cassandra" xmlns="http://www.springframework.org/schema/beans"
 		  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cassandra="http://www.springframework.org/schema/data/cassandra"
 		  xmlns:context="http://www.springframework.org/schema/context"
